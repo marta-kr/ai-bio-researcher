@@ -1,0 +1,3 @@
+[submodule "external/LightRAG"]
+	path = external/LightRAG
+	url = https://github.com/marta-kr/LightRAG.git
