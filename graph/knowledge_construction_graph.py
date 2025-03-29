@@ -4,8 +4,7 @@ import arxiv
 
 from data_models.research import ArxivArticle, ArxivSearchQueries, ArxivArticles
 from data_models.state import KnowledgeGraphConstructionState
-from graph.articles_preprocessing_graph import create_articles_preprocessing_graph
-from graph.research_data_preparation_graph import create_research_data_preparation_graph
+from kg_rag.rag_provider import RagProvider
 from prompts.research_prompts import generate_arxiv_queries_prompt
 from utils.pdf import load_pdf_content
 
@@ -15,12 +14,6 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain_openai import ChatOpenAI
 
-from lightrag.llm.openai import gpt_4o_mini_complete, openai_embed
-from lightrag import LightRAG
-
-WORKING_DIR = 'ai-bio-researcher/kg_rag/db'
-
-# TODO: init state variables for articles
 async def generate_arxiv_queries(state: KnowledgeGraphConstructionState) -> KnowledgeGraphConstructionState:
   try:
     print("Generating queries...")
@@ -109,16 +102,11 @@ async def download_arxiv_articles(state: KnowledgeGraphConstructionState) -> Kno
     return state
 
 async def construct_knowledge_graph(state: KnowledgeGraphConstructionState) -> KnowledgeGraphConstructionState:
-    rag = LightRAG(
-    working_dir=WORKING_DIR,
-    embedding_func=openai_embed,
-    llm_model_func=gpt_4o_mini_complete,
-    addon_params=
-    {
+    params =  {
        "entity_types": ["disease", "symptom", "drug", "gene", "biological process", "biological system", "cell", "tissue", "organ", "sub-cellular component", "protein", "organism", "experimental procedure", "computational method/algorithm", "health intervention", "scientific tool", "medical device"],
        "example_number": 2
     }
-  )
+    rag = RagProvider.get_gpt_instance(addon_params=params)
  
     all_articles: Sequence[str] = (article.content for article in state["arxiv_articles"].articles) 
 
@@ -129,15 +117,11 @@ def create_kg_construction_graph() -> StateGraph:
     research_graph = StateGraph(KnowledgeGraphConstructionState)
     research_graph.add_node("generate_arxiv_queries", generate_arxiv_queries)
     research_graph.add_node("download_arxiv_articles", download_arxiv_articles)
-    # research_graph.add_node("articles_preprocessing", create_articles_preprocessing_graph())
     research_graph.add_node("construct_knowledge_graph", construct_knowledge_graph)
 
     research_graph.add_edge(START, "generate_arxiv_queries")
     research_graph.add_edge("generate_arxiv_queries", "download_arxiv_articles")
     research_graph.add_edge("download_arxiv_articles", "construct_knowledge_graph")
-    # research_graph.add_edge("download_arxiv_articles", "articles_preprocessing")
-    # research_graph.add_edge("articles_preprocessing", "construct_knowledge_graph")
     research_graph.add_edge("construct_knowledge_graph", END)
 
-    # print("Research graph constructed and compiled successfully!")
     return research_graph.compile()

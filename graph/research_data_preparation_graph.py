@@ -1,6 +1,7 @@
 import asyncio
 from typing import Sequence
 
+from kg_rag.rag_provider import RagProvider
 from lightrag.base import QueryParam
 
 from data_models.research import KnowledgeGraphQueries, ResearchKnowledge, ResearchKnowledgeExplorationStage, ResearcherResponse, RetrievedKnowledge
@@ -16,17 +17,15 @@ from langchain_openai import ChatOpenAI
 from lightrag.llm.openai import openai_embed, o3_mini
 from lightrag import LightRAG
 
-WORKING_DIR = 'ai-bio-researcher/kg_rag/db'
-rag = LightRAG(
-        working_dir=WORKING_DIR,
-        embedding_func=openai_embed,
-        llm_model_func=o3_mini
-    )
+rag = None
 
 async def init_node(state: ResearchDataPreparationState) -> ResearchDataPreparationState:
     state["research_knowledge"] = ResearchKnowledge(knowledge=[])
     state["current_kgrag_queries"] = KnowledgeGraphQueries(queries=[])
     state["exploration_stage"] = ResearchKnowledgeExplorationStage.NEED_KG_SEARCH
+
+    rag = RagProvider.get_o3_instance()
+
     return state
 
 async def researcher_node(state: ResearchDataPreparationState) -> ResearchDataPreparationState:
@@ -63,7 +62,6 @@ async def expert_kgrag_node(state: ResearchDataPreparationState) -> ResearchData
     # TODO: run in parallel
     queries_results: Sequence[RetrievedKnowledge] = []
     for query in state["current_kgrag_queries"].queries:
-        # TODO: should I await here?
         response = rag.query(
             query,
             param=QueryParam(mode="mix")
