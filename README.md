@@ -1,6 +1,6 @@
 # AI Agents in Bioinformatics
 
-Welcome to the **AI Agents in Bioinformatics** project! This repository contains a system of AI agents that collaborate on a bioinformatics research topic. The agents mine arXiv literature to construct a knowledge graph, analyze the current state of the field, and propose novel research directions. For more insights and related articles, please visit our blog: [My Programming, AI & Mobile Blog](https://collectivemind.blog).
+Welcome to the **AI Agents in Bioinformatics** project! This repository contains a system of AI agents that collaborate on a bioinformatics research topic. The agents mine arXiv literature to construct a knowledge graph, analyze the current state of the field, and propose novel research directions. For more insights and related articles, please visit my blog: [My Programming, AI & Mobile Blog](https://collectivemind.blog).
 
 
 ## Cloning the Repository
@@ -71,4 +71,4 @@ The project requires an OpenAI API key. The key is read from the environment var
 
 ## Working with the LightRAG Submodule
 
-The modified LightRAG library is included as a submodule under `external/LightRAG`.
+The modified LightRAG library is included as a submodule under `external/LightRAG`. This is a fork from official LighRAG repo: [LightRAG GitHub](https://github.com/HKUDS/LightRAG)

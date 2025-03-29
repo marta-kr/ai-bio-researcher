@@ -9,7 +9,8 @@ async def init_node(state: ResearchState) -> ResearchState:
     return state
 
 def should_construct_knowledge_graph(state: ResearchState) -> str:
-    # TODO: add to research configuration class variables to control this
+    if state["research"].kg_construction_needed:
+        return "create_kg_construction_node"
     return "research_data_preparation_node"
 
 def create_research_graph() -> StateGraph:

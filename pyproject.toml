@@ -25,6 +25,7 @@ pyglm = "2.8.0"
 pymupdf = "1.25.3"
 python-louvain = "0.16"
 tomli = "2.0.1"
+pyyaml = "^6.0.2"
 lightrag-hku = { path = "external/LightRAG", develop = true }
 
 

@@ -33,6 +33,7 @@ class Research(BaseModel):
     """Initial research project data"""
     topic: str
     description: str
+    kg_construction_needed: bool
 
 class RetrievedKnowledge(BaseModel):
     query: str
