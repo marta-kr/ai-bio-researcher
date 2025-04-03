@@ -34,3 +34,9 @@ class ResearchDataPreparationState(TypedDict):
     research_knowledge : ResearchKnowledge
     current_kgrag_queries: KnowledgeGraphQueries
 
+class HypothesisGenerationState(TypedDict):
+    research: Research
+
+class ToolExecutionState(TypedDict):
+    research: Research
+
